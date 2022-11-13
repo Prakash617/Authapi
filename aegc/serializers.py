@@ -6,14 +6,15 @@ from django.utils.encoding import smart_str, force_bytes, DjangoUnicodeDecodeErr
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from aegc.utils import Util
-from .models import Carousel, Visa
+from .models import Carousel, Team, Visa
 
 class CarouselSerializer(serializers.ModelSerializer):
     class Meta:
         model = Carousel
         fields = (
             "id",
-            "name",
+            "title",
+            "subTitle",
             'image',
             "get_imageUrl",
             "slug",
@@ -27,10 +28,22 @@ class VisaSerializer(serializers.ModelSerializer):
             "id",
             "name",
             'image',
-            
             "location",
             "get_imageUrl",
             "slug",
+        )
+        
+class TeamSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Team
+        fields = (
+            "id",
+            "name",
+            'qualification',
+            "link",
+            "get_imageUrl",
+          
         )
         
 class UserSerializer(serializers.ModelSerializer):
@@ -105,7 +118,7 @@ class SendPasswordResetEmailSerializer(serializers.Serializer):
         'body':body,
         'to_email':user.email
       }
-    #   Util.send_email(data)
+      Util.send_email(data)
       return attrs
     else:
       raise serializers.ValidationError('You are not a Registered User')

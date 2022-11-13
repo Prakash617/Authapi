@@ -4,7 +4,7 @@
 from asyncio.windows_events import NULL
 
 from django.shortcuts import render
-from .models import Carousel, Visa
+from .models import Carousel, Team, Visa
 
 
 
@@ -16,7 +16,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated,AllowAny, BasePermission, SAFE_METHODS
 
-from .serializers import SendPasswordResetEmailSerializer, UserChangePasswordSerializer, UserLoginSerializer, UserPasswordResetSerializer, UserSerializer, VisaSerializer, CarouselSerializer,UserSerializer
+from .serializers import SendPasswordResetEmailSerializer, TeamSerializer, UserChangePasswordSerializer, UserLoginSerializer, UserPasswordResetSerializer, UserSerializer, VisaSerializer, CarouselSerializer,UserSerializer
 from aegc import serializers
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -81,7 +81,23 @@ class CarouselList(APIView):
         
         return Response({"msg":"Unsuccessfull"},serializers.errors,status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-        
+class TeamList(APIView):
+    
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated | ReadOnly]
+    
+    
+    def get(self, request,slug=NULL, format=None):
+        if slug == NULL:
+            team = Team.objects.all()
+           
+            serializers = TeamSerializer(team, many=True)
+            # serializers.is_valid(raise_exception=True)
+            return Response(serializers.data) 
+        else:
+            team = Team.objects.get(slug = slug)
+            serializer = TeamSerializer(team)
+            return Response(serializer.data) 
 
 class VisaList(APIView):
     def get(self, request, format=None):

@@ -1,7 +1,7 @@
 
 
 
-from asyncio.windows_events import NULL
+
 
 from django.shortcuts import render
 from .models import Carousel, Team, Visa
@@ -21,9 +21,6 @@ from aegc import serializers
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 
-# from django.contrib.auth.decorators import login_required
-# Create your views here.
-
 class ReadOnly(BasePermission):
     def has_permission(self, request, view):
         return request.method in SAFE_METHODS
@@ -41,8 +38,8 @@ class CarouselList(APIView):
     permission_classes = [IsAuthenticated | ReadOnly]
     
     
-    def get(self, request,slug=NULL, format=None):
-        if slug == NULL:
+    def get(self, request,slug=None, format=None):
+        if slug == None:
             carousels = Carousel.objects.all()
             print(carousels)
             serializers = CarouselSerializer(carousels, many=True)
@@ -63,8 +60,8 @@ class CarouselList(APIView):
                 return Response({'msg':'Data created'},status=status.HTTP_201_CREATED)
             
             return Response({'msg':'Data not created'},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    def patch(self, request,slug=NULL,format = None):
-            if slug != NULL:
+    def patch(self, request,slug=None,format = None):
+            if slug != None:
                 data  = request.data
                 carousel = Carousel.objects.get(slug = slug)
                 serializers = CarouselSerializer(carousel,data=data,partial=True)
@@ -73,8 +70,8 @@ class CarouselList(APIView):
                     return Response({'msg':'Data created'},status=status.HTTP_206_PARTIAL_CONTENT)
             
             return Response({'msg':'Data not created'},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    def delete(self,request, slug=NULL, format=None):
-        if slug != NULL:
+    def delete(self,request, slug=None, format=None):
+        if slug != None:
             obj = Carousel.objects.get(slug = slug)
             obj.delete()
             return Response("Item successfully deleted")
@@ -87,8 +84,8 @@ class TeamList(APIView):
     permission_classes = [IsAuthenticated | ReadOnly]
     
     
-    def get(self, request,slug=NULL, format=None):
-        if slug == NULL:
+    def get(self, request,slug=None, format=None):
+        if slug == None:
             team = Team.objects.all()
            
             serializers = TeamSerializer(team, many=True)
